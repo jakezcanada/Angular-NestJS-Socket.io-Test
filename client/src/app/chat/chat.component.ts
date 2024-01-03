@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { io } from 'socket.io-client';
+import {io, Socket} from 'socket.io-client';
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-chat',
@@ -7,22 +8,22 @@ import { io } from 'socket.io-client';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit {
-  private socket: any;
+  private socket: Socket;
   messages: string[] = [];
   newMessage: string = '';
 
   constructor() {
-    this.socket = io('ws://localhost:3000');
+    this.socket = io('http://localhost:3000');
   }
 
   ngOnInit() {
-    this.socket.on('message', (message: string) => {
+    this.socket.on('newMessage', (message: string) => {
       this.messages.push(message);
     });
   }
 
   sendMessage() {
-    this.socket.emit('message', this.newMessage);
+    this.socket.emit('sendMessage', this.newMessage);
     this.newMessage = '';
   }
 }
